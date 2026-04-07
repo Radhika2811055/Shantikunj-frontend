@@ -1,8 +1,12 @@
-# Client (React + Vite)
+# Shantikunj Frontend
 
-Frontend application for the Shantikunj multilingual workflow platform.
+frontend for the Shantikunj multilingual workflow platform.
 
-## Tech
+## Overview
+
+This repository contains the client-side application for the Shantikunj LMS audiobook workflow system. It provides role-based pages for users, recorders, translators, checkers, and administrators.
+
+## Tech Stack
 
 - React
 - Vite
@@ -24,40 +28,42 @@ npm install
 npm run dev
 ```
 
-App URL: `http://localhost:5173`
+Open `http://localhost:5173` in your browser.
 
 ## Backend Connection
 
-API calls use `/api` as base URL in `src/api/axios.js`.
-
-In local development, Vite proxy forwards `/api` to `http://localhost:5000` (see `vite.config.js`).
+- API requests use `/api` as the base path in `src/api/axios.js`.
+- In development, the Vite proxy forwards `/api` to `http://localhost:5000`.
+- See `vite.config.js` for proxy configuration.
 
 ## Scripts
 
-- `npm run dev` - start dev server
-- `npm run build` - build production assets
-- `npm run preview` - preview production build
-- `npm run lint` - run ESLint
+- `npm run dev` - Start the Vite development server
+- `npm run build` - Build production-ready assets
+- `npm run preview` - Preview the production build locally
+- `npm run lint` - Run ESLint checks
+
+## Application Structure
+
+The main app routes and views are defined in `src/App.jsx`.
+
+Key areas:
+
+- `src/api` - Axios API client configuration
+- `src/components` - Reusable components and route guards
+- `src/context` - Authentication and theme providers
+- `src/pages` - Page modules organized by workflow and role
 
 ## Role-Based UI Areas
 
-Main pages are grouped by role and workflow stage in `src/pages` and linked through routes in `src/App.jsx`.
+The frontend supports:
 
-Examples:
+- Dashboard and statistics pages
+- Work queue and assignment management
+- Recorder upload and recording history
+- Translator and checker feedback workflows
+- User and team management for admins
 
-- dashboard and statistics views
-- work queue and assignment management
-- recorder upload and recorder history
-- translator/checker feedback and task pages
+## Notes
+- This project is intended to be paired with the Shantikunj backend API.
 
-## Folder Highlights
-
-- `src/api` - API client setup
-- `src/components` - reusable UI and guard components
-- `src/context` - auth and theme providers
-- `src/pages` - routed page modules
-
-## Quality
-
-- ESLint is configured via `eslint.config.js`.
-- Current lint baseline is clean.
