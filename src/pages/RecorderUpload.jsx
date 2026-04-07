@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import axios from 'axios'
 import { useSearchParams } from 'react-router-dom'
-import api from '../api/axios'
+import { getApiErrorMessage } from '../api/errorParser'
+import { mapUploadResponseFiles } from '../api/uploadMapper'
+import { booksService, notificationsService } from '../api/services'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
+import { audioUploadRules, validateFiles } from '../utils/uploadValidation'
 
 const RecorderUpload = () => {
   const { user } = useAuth()
@@ -31,8 +33,8 @@ const RecorderUpload = () => {
     setLoading(true)
     try {
       const [assignedRes, notifRes] = await Promise.all([
-        api.get('/books/my-assignments').catch(() => ({ data: [] })),
-        api.get('/notifications/my').catch(() => ({ data: { notifications: [] } }))
+        booksService.myAssignments().catch(() => ({ data: [] })),
+        notificationsService.myNotifications().catch(() => ({ data: { notifications: [] } }))
       ])
 
       setAssigned(Array.isArray(assignedRes.data) ? assignedRes.data : [])
@@ -103,6 +105,12 @@ const RecorderUpload = () => {
       return
     }
 
+    const fileValidation = validateFiles(formState.files, audioUploadRules, 'audio')
+    if (!fileValidation.valid) {
+      setNotice({ type: 'error', text: fileValidation.message })
+      return
+    }
+
     setUploading(true)
     setNotice({ type: '', text: '' })
 
@@ -112,39 +120,20 @@ const RecorderUpload = () => {
         payload.append('audio', file)
       })
 
-      let uploadRes
-      try {
-        uploadRes = await api.post('/books/upload-audio-file', payload)
-      } catch (uploadError) {
-        if (uploadError?.response?.status !== 404) {
-          throw uploadError
-        }
-
-        const token = localStorage.getItem('token')
-        uploadRes = await axios.post('/api/books/upload-audio-file', payload, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        })
-      }
-
-      const uploadedFiles = Array.isArray(uploadRes.data?.files) ? uploadRes.data.files : []
-      const audioUrls = uploadedFiles
-        .map((item) => item?.fileUrl)
-        .filter(Boolean)
-
-      if (audioUrls.length === 0 && uploadRes.data?.fileUrl) {
-        audioUrls.push(uploadRes.data.fileUrl)
-      }
-
-      const uniqueAudioUrls = [...new Set(audioUrls)]
+      const uploadRes = await booksService.uploadAudioFile(payload)
+      const uploaded = mapUploadResponseFiles(uploadRes.data)
+      const uniqueAudioUrls = [...new Set(uploaded.fileUrls)]
       const audioUrl = uniqueAudioUrls[0]
 
       if (!audioUrl) {
         throw new Error('Upload URL not returned by server')
       }
 
-      await api.post(`/books/${selectedTask.bookId}/versions/${selectedTask.versionId}/submit-audio`, {
+      await booksService.submitAudio(selectedTask.bookId, selectedTask.versionId, {
         audioUrl,
-        audioUrls: uniqueAudioUrls
+        audioUrls: uniqueAudioUrls,
+        audioFiles: uploaded.files,
+        audioFileMeta: uploaded.fileMeta
       })
 
       setNotice({
@@ -154,7 +143,7 @@ const RecorderUpload = () => {
       setFormState((prev) => ({ ...prev, files: [] }))
       await load()
     } catch (error) {
-      const message = error?.response?.data?.message || error?.message || 'Unable to upload and submit audio file'
+      const message = getApiErrorMessage(error, 'Unable to upload and submit audio file')
       setNotice({ type: 'error', text: message })
     } finally {
       setUploading(false)

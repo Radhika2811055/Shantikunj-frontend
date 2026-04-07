@@ -1,0 +1,189 @@
+/* BRUTALIST DARK THEME OVERRIDES */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg-page: #000000;
+  --bg-card: #0c0c0c;
+  --bg-input: #121212;
+  --text-main: #ffffff;
+  --text-muted: #a0a0a0;
+  --border-color: #ffffff;
+  --primary-color: #e9ff00; /* Neon Yellow / Green */
+  --primary-hover: #b8cc00;
+  --accent-color: #ff0055; /* Hot Pink */
+}
+
+body, .auth-page, .app-shell, .spoc-main-layout {
+  background: var(--bg-page) !important;
+  color: var(--text-main) !important;
+  font-family: 'Space Grotesk', monospace, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  border: 4px solid var(--primary-color) !important;
+  min-height: 100vh;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.auth-brand-panel, .auth-card, .stat-card, .admin-card, .checker-card, .translator-card,
+.topbar, .sidebar, .activity-feed, .chart-card, .pipeline-card, .task-card, .table-container {
+  background: var(--bg-card) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 4px 4px 0px var(--primary-color) !important;
+  border-radius: 0px !important;
+  backdrop-filter: none !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.stat-card:hover, .auth-card:hover, .admin-card:hover {
+  transform: translate(-3px, -3px) !important;
+  box-shadow: 7px 7px 0px var(--primary-color) !important;
+}
+
+.auth-brand-panel h1, .auth-card h2, .admin-card h3, .topbar-intro h1 {
+  font-family: 'Syne', sans-serif !important;
+  color: var(--text-main) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.auth-brand-panel p, .auth-card p, .topbar-intro p, .text-muted {
+  color: var(--text-muted) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+button.primary, .btn-primary, .auth-card button, .btn-link, .topbar .cta-btn, .admin-actions button {
+  background: var(--primary-color) !important;
+  color: #000000 !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 3px 3px 0px #ffffff !important;
+  border-radius: 0 !important;
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  transition: all 0.2s ease !important;
+}
+
+button.primary:hover, .btn-primary:hover, .auth-card button:hover, .btn-link:hover {
+  background: var(--primary-hover) !important;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 1px 1px 0px #ffffff !important;
+}
+
+button.secondary, .btn-secondary, .google-btn {
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 2px 2px 0px var(--text-main) !important;
+  border-radius: 0 !important;
+}
+
+input, select, textarea {
+  border: 2px solid var(--border-color) !important;
+  border-radius: 0 !important;
+  background: var(--bg-input) !important;
+  color: var(--text-main) !important;
+  box-shadow: none !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary-color) !important;
+  outline: none !important;
+  box-shadow: 0px 0px 8px var(--primary-color) !important;
+}
+
+/* Remove structural gradients & background shapes */
+.blur-blob, .bg-glow, .gradient-border {
+  display: none !important;
+}
+
+/* Badges & Pills */
+.status-badge, .pill, .role-badge, .lang-badge, .stage-badge, .priority-badge {
+  background: #000 !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  border-radius: 0 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  box-shadow: 2px 2px 0px var(--primary-color) !important;
+}
+
+.status-badge.success { color: #00ff00 !important; border-color: #00ff00 !important; box-shadow: 2px 2px 0px #00ff00 !important; }
+.status-badge.warning { color: #ffeb3b !important; border-color: #ffeb3b !important; box-shadow: 2px 2px 0px #ffeb3b !important; }
+.status-badge.error   { color: #ff0055 !important; border-color: #ff0055 !important; box-shadow: 2px 2px 0px #ff0055 !important; }
+
+/* Menus and Dropdowns */
+.dropdown-menu, .nav-dropdown {
+  background: var(--bg-card) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 4px 4px 0px var(--primary-color) !important;
+  border-radius: 0 !important;
+}
+
+.sidebar .nav-item {
+  border-radius: 0 !important;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid transparent !important;
+  margin-bottom: 4px;
+}
+
+.sidebar .nav-item.active {
+  background: rgba(233, 255, 0, 0.1) !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  border-left: 4px solid var(--primary-color) !important;
+  font-weight: 700 !important;
+}
+
+.sidebar .nav-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+hr, .divider, .auth-hairline, .table-container th, .table-container td {
+  border-color: var(--border-color) !important;
+}
+
+.table-container th {
+  background: #0a0a0a !important;
+  color: var(--primary-color) !important;
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 14px !important;
+  border-bottom: 2px solid var(--border-color) !important;
+}
+
+.table-container tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.table-container tr:hover {
+  background: rgba(233, 255, 0, 0.05) !important;
+}
+
+/* Progress bars */
+.progress-bar-fill, .strength-fill {
+  background: var(--primary-color) !important;
+  border-radius: 0 !important;
+}
+
+.dashboard-header, .page-header {
+  background: transparent !important;
+  color: var(--primary-color) !important;
+  border-bottom: 2px solid var(--primary-color) !important;
+}
+
+/* Force dark mode */
+body.theme-dark {
+  background: var(--bg-page) !important;
+  color: var(--text-main) !important;
+}

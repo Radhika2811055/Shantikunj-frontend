@@ -1,10 +1,10 @@
 # Shantikunj Frontend
 
-frontend for the Shantikunj multilingual workflow platform.
+Frontend for the Shantikunj multilingual workflow platform.
 
 ## Overview
 
-This repository contains the client-side application for the Shantikunj LMS audiobook workflow system. It provides role-based pages for users, recorders, translators, checkers, and administrators.
+This repository contains the client application for LMS audiobook workflow operations with role-based routing and backend-integrated flows for auth, claims, uploads, review loops, support, notifications, feedback, and audit visibility.
 
 ## Tech Stack
 
@@ -13,57 +13,83 @@ This repository contains the client-side application for the Shantikunj LMS audi
 - React Router
 - Axios
 - ESLint
+- Vitest + Testing Library
 
-## Setup
+## Environment Configuration
 
-### 1) Install dependencies
+Runtime API configuration is strict and validated at startup.
 
-```powershell
+Required variable:
+
+- `VITE_API_BASE_URL`
+
+Example `.env` for development:
+
+```bash
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+Notes:
+
+- The frontend automatically calls `${VITE_API_BASE_URL}/api/...`.
+- If `VITE_API_BASE_URL` is missing or invalid, the app throws a clear startup error.
+
+## Development Setup
+
+1. Install dependencies
+
+```bash
 npm install
 ```
 
-### 2) Start development server
+2. Set env file (`.env`) with `VITE_API_BASE_URL`
 
-```powershell
+3. Start development server
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:5173`.
 
-## Backend Connection
+## Production Setup
 
-- API requests use `/api` as the base path in `src/api/axios.js`.
-- In development, the Vite proxy forwards `/api` to `http://localhost:5000`.
-- See `vite.config.js` for proxy configuration.
+Build with production API base URL:
+
+```bash
+VITE_API_BASE_URL=https://your-api-host npm run build
+```
+
+Preview build:
+
+```bash
+npm run preview
+```
 
 ## Scripts
 
-- `npm run dev` - Start the Vite development server
-- `npm run build` - Build production-ready assets
-- `npm run preview` - Preview the production build locally
-- `npm run lint` - Run ESLint checks
+- `npm run dev` - Start Vite development server
+- `npm run build` - Build production assets
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run test` - Run tests once
+- `npm run test:watch` - Run tests in watch mode
 
-## Application Structure
+## Project Structure
 
-The main app routes and views are defined in `src/App.jsx`.
-
-Key areas:
-
-- `src/api` - Axios API client configuration
+- `src/api` - Centralized API client, error parsing, typed service modules
 - `src/components` - Reusable components and route guards
-- `src/context` - Authentication and theme providers
-- `src/pages` - Page modules organized by workflow and role
+- `src/context` - Auth and theme context
+- `src/hooks` - Global API guards (unauthorized + in-flight cancel on route change)
+- `src/pages` - Role-based pages and workflow screens
+- `src/utils` - Upload validation helpers
 
-## Role-Based UI Areas
+## Integration Document
 
-The frontend supports:
+See `INTEGRATION.md` for:
 
-- Dashboard and statistics pages
-- Work queue and assignment management
-- Recorder upload and recording history
-- Translator and checker feedback workflows
-- User and team management for admins
-
-## Notes
-- This project is intended to be paired with the Shantikunj backend API.
-
+- architecture changes
+- endpoint mapping table
+- env setup summary
+- test checklist
+- known limitations

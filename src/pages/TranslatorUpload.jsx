@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import api from '../api/axios'
+import { getApiErrorMessage } from '../api/errorParser'
+import { mapUploadResponseFiles } from '../api/uploadMapper'
+import { authService, booksService, notificationsService } from '../api/services'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
+import { translationUploadRules, validateFiles } from '../utils/uploadValidation'
 
 const TranslatorUpload = () => {
   const { user } = useAuth()
@@ -30,9 +33,9 @@ const TranslatorUpload = () => {
       setLoading(true)
       try {
         const [assignedRes, notifRes, profileRes] = await Promise.all([
-          api.get('/books/my-assignments').catch(() => ({ data: [] })),
-          api.get('/notifications/my').catch(() => ({ data: { notifications: [] } })),
-          api.get('/auth/me').catch(() => ({ data: null }))
+          booksService.myAssignments().catch(() => ({ data: [] })),
+          notificationsService.myNotifications().catch(() => ({ data: { notifications: [] } })),
+          authService.me().catch(() => ({ data: null }))
         ])
 
         setAssigned(Array.isArray(assignedRes.data) ? assignedRes.data : [])
@@ -106,6 +109,12 @@ const TranslatorUpload = () => {
       return
     }
 
+    const fileValidation = validateFiles(formState.files, translationUploadRules, 'translation')
+    if (!fileValidation.valid) {
+      setNotice({ type: 'error', text: fileValidation.message })
+      return
+    }
+
     setUploading(true)
     setNotice({ type: '', text: '' })
 
@@ -115,22 +124,19 @@ const TranslatorUpload = () => {
         payload.append('documents', file)
       })
 
-      const uploadRes = await api.post('/books/upload-translation-doc', payload)
-      const uploadedFiles = Array.isArray(uploadRes.data?.files) && uploadRes.data.files.length > 0
-        ? uploadRes.data.files
-        : (uploadRes.data?.fileUrl ? [{ fileUrl: uploadRes.data.fileUrl }] : [])
-
-      const textFileUrls = uploadedFiles
-        .map((item) => (typeof item?.fileUrl === 'string' ? item.fileUrl.trim() : ''))
-        .filter(Boolean)
+      const uploadRes = await booksService.uploadTranslationDocument(payload)
+      const uploaded = mapUploadResponseFiles(uploadRes.data)
+      const textFileUrls = uploaded.fileUrls
 
       if (textFileUrls.length === 0) {
         throw new Error('Upload URL not returned by server')
       }
 
-      await api.post(`/books/${selectedTask.bookId}/versions/${selectedTask.versionId}/submit-translation`, {
+      await booksService.submitTranslation(selectedTask.bookId, selectedTask.versionId, {
         textFileUrl: textFileUrls[0],
-        textFileUrls
+        textFileUrls,
+        textFiles: uploaded.files,
+        textFileMeta: uploaded.fileMeta
       })
 
       setNotice({
@@ -140,11 +146,7 @@ const TranslatorUpload = () => {
       setFormState((prev) => ({ ...prev, files: [] }))
       setFileInputKey((prev) => prev + 1)
     } catch (error) {
-      const rawResponseText = typeof error?.response?.data === 'string'
-        ? error.response.data.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-        : ''
-      const responseMessage = error?.response?.data?.message || (rawResponseText ? rawResponseText.slice(0, 220) : '')
-      const msg = responseMessage || error?.message || 'Unable to upload and submit file'
+      const msg = getApiErrorMessage(error, 'Unable to upload and submit file')
       setNotice({ type: 'error', text: msg })
     } finally {
       setUploading(false)

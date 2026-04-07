@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
+import { claimsService } from '../api/services'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/workqueue/StatusBadge'
@@ -152,6 +153,21 @@ const WorkQueue = () => {
       pushToast('Task claimed successfully.', 'success')
     } catch (err) {
       const msg = err?.response?.data?.message || 'Failed to claim task'
+      pushToast(msg, 'error')
+    } finally {
+      setBusyId('')
+    }
+  }
+
+  const onSendInterest = async (bookId, language) => {
+    if (!canClaim) return
+
+    setBusyId(`interest:${bookId}`)
+    try {
+      await claimsService.sendInterest(bookId, { language, claimType: roleClaimTypes[user.role] })
+      pushToast('Interest sent successfully.', 'success')
+    } catch (err) {
+      const msg = err?.userMessage || err?.response?.data?.message || 'Failed to send interest'
       pushToast(msg, 'error')
     } finally {
       setBusyId('')
@@ -902,14 +918,24 @@ const WorkQueue = () => {
                     </div>
                     <p>Auto Deadline: {projectedDeadline.toLocaleString()}</p>
                     {canClaim && (
-                      <button
-                        className="mini-btn"
-                        type="button"
-                        onClick={() => onClaim(item._id, item.version?.language, days)}
-                        disabled={busyId === `claim:${item._id}` || Boolean(myClaim)}
-                      >
-                        {busyId === `claim:${item._id}` ? 'Claiming...' : 'Claim'}
-                      </button>
+                      <div className="row-actions">
+                        <button
+                          className="mini-btn"
+                          type="button"
+                          onClick={() => onClaim(item._id, item.version?.language, days)}
+                          disabled={busyId === `claim:${item._id}` || Boolean(myClaim)}
+                        >
+                          {busyId === `claim:${item._id}` ? 'Claiming...' : 'Claim'}
+                        </button>
+                        <button
+                          className="mini-btn"
+                          type="button"
+                          onClick={() => onSendInterest(item._id, item.version?.language)}
+                          disabled={busyId === `interest:${item._id}`}
+                        >
+                          {busyId === `interest:${item._id}` ? 'Sending...' : 'Send Interest'}
+                        </button>
+                      </div>
                     )}
                     </article>
                   )

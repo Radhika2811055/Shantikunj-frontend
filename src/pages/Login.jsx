@@ -1,153 +1,131 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { authService } from '../api/services'
+import { runtimeConfig } from '../config/runtimeConfig'
 import { useAuth } from '../context/AuthContext'
+import { getApiErrorMessage } from '../api/errorParser'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const Login = () => {
-	const navigate = useNavigate()
-	const location = useLocation()
-	const { login, loading, error, setError } = useAuth()
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [showPassword, setShowPassword] = useState(false)
-	const [touched, setTouched] = useState({ email: false, password: false })
-	const [clientError, setClientError] = useState('')
-	const searchParams = new URLSearchParams(location.search)
-	const verified = searchParams.get('verified')
-	const errorCode = searchParams.get('error')
-	const [flashMessage] = useState(() => {
-		if (verified === '1') {
-			return 'Email verified successfully. You can login after admin approval.'
-		}
-		return ''
-	})
-	const [flashError] = useState(() => {
-		if (errorCode === 'google_failed') return 'Google login failed. Please try again.'
-		if (errorCode === 'server_error') return 'Server error during Google login. Please try again.'
-		if (errorCode === 'pending') return 'Your Google account is pending admin approval.'
-		if (errorCode === 'verify_link_invalid' || errorCode === 'verify_failed') {
-			return 'Email verification link is invalid or expired. Please register again.'
-		}
-		return ''
-	})
+    const navigate = useNavigate()
+    const location = useLocation()
+    const { login, loading, error, setError } = useAuth()
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [touched, setTouched] = useState({ email: false, password: false })
+    const [clientError, setClientError] = useState('')
+    const [oauthError, setOauthError] = useState('')
 
-	useEffect(() => {
-		setError('')
+    const searchParams = new URLSearchParams(location.search)
+    const verified = searchParams.get('verified')
+    const errorCode = searchParams.get('error')
 
-		if (location.search) {
-			navigate('/login', { replace: true })
-		}
-	}, [location.search, navigate, setError])
+    useEffect(() => {
+        setError('')
+        if (location.search) {
+            navigate('/login', { replace: true })
+        }
+    }, [location.search, navigate, setError])
 
-	const emailError = !email.trim()
-		? 'Email is required.'
-		: !EMAIL_REGEX.test(email.trim())
-			? 'Enter a valid email address.'
-			: ''
+    const emailError = !email.trim() ? 'Email is required.' : !EMAIL_REGEX.test(email.trim()) ? 'Enter a valid email.' : ''
+    const passwordError = !password ? 'Password is required.' : password.length < 8 ? 'Password must be at least 8 characters.' : ''
+    const hasValidationError = Boolean(emailError || passwordError)
 
-	const passwordError = !password
-		? 'Password is required.'
-		: password.length < 8
-			? 'Password must be at least 8 characters.'
-			: ''
+    const onSubmit = async (event) => {
+        event.preventDefault()
+        setTouched({ email: true, password: true })
+        setClientError('')
+        if (hasValidationError) {
+            setClientError('Please fix highlighted fields.')
+            return
+        }
+        const result = await login(email.trim().toLowerCase(), password)
+        if (result.ok) {
+            navigate('/dashboard')
+        }
+    }
 
-	const hasValidationError = Boolean(emailError || passwordError)
+    const onGoogleLogin = async () => {
+        setOauthError('')
+        try {
+            const response = await authService.googleLoginEntry()
+            const redirectUrl = typeof response?.data === 'string' ? response.data : response?.data?.url || response?.data?.redirectUrl
+            if (redirectUrl) {
+                window.location.assign(redirectUrl)
+                return
+            }
+            window.location.assign(`${runtimeConfig.apiRoot}/auth/google`)
+        } catch (error) {
+            setOauthError(getApiErrorMessage(error, 'Google login failed.'))
+        }
+    }
 
-	const onSubmit = async (event) => {
-		event.preventDefault()
-		setTouched({ email: true, password: true })
-		setClientError('')
-		if (hasValidationError) {
-			setClientError('Please fix the highlighted fields.')
-			return
-		}
-		const result = await login(email.trim().toLowerCase(), password)
-		if (result.ok) {
-			navigate('/dashboard')
-		}
-	}
-
-	return (
-		<div className="auth-page">
-			<div className="auth-layout">
-				<section className="auth-brand-panel">
-					<p className="eyebrow">LMS AudioBook</p>
-					<h1>Secure Access For LMS Publishing Teams</h1>
-					<p>Track translation, review and production progress with role-based workflows.</p>
-				</section>
-
-				<form className="auth-card auth-card-modern" onSubmit={onSubmit}>
-					<h2>Welcome Back</h2>
-					<p>Login to continue workflow operations.</p>
-
-					<label htmlFor="email">Email</label>
-					<input
-						id="email"
-						type="email"
-						value={email}
-						className={touched.email && emailError ? 'input-error' : ''}
-						onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
-						onChange={(event) => {
-							setEmail(event.target.value)
-							if (error) setError('')
-						}}
-						required
-					/>
-					{touched.email && emailError && <span className="field-error">{emailError}</span>}
-
-					<label htmlFor="password">Password</label>
-					<div className="password-wrap">
-						<input
-							id="password"
-							type={showPassword ? 'text' : 'password'}
-							value={password}
-							className={touched.password && passwordError ? 'input-error' : ''}
-							onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-							onChange={(event) => {
-								setPassword(event.target.value)
-								if (error) setError('')
-							}}
-							required
-						/>
-						<button
-							type="button"
-							className="toggle-pass"
-							onClick={() => setShowPassword((prev) => !prev)}
-						>
-							{showPassword ? 'Hide' : 'Show'}
-						</button>
-					</div>
-					{touched.password && passwordError && <span className="field-error">{passwordError}</span>}
-
-					{clientError && <div className="error-box">{clientError}</div>}
-					{flashMessage && <div className="ok-box">{flashMessage}</div>}
-					{flashError && <div className="error-box">{flashError}</div>}
-					{error && <div className="error-box">{error}</div>}
-
-					<p className="auth-link auth-link-right">
-						<Link to="/forgot-password">Forgot password?</Link>
-					</p>
-
-					<button type="submit" disabled={loading}>{loading ? 'Please wait...' : 'Login'}</button>
-
-					<button
-						type="button"
-						className="google-btn"
-						onClick={() => {
-							window.location.href = '/api/auth/google'
-						}}
-					>
-						Continue with Google
-					</button>
-
-					<p className="auth-link">
-						No account? <Link to="/register">Create one</Link>
-					</p>
-				</form>
-			</div>
-		</div>
-	)
+    return (
+        <div className="login-split-page">
+            <div className="login-left">
+                <div className="login-form-container">
+                    <div style={{color: '#4f46e5', marginBottom: '40px'}}><svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg></div>
+                    <h1>Welcome back !</h1>
+                    <p className="subtitle">Enter to get unlimited access to data & information.</p>
+                    
+                    <form onSubmit={onSubmit}>
+                        <div className="login-field">
+                            <label>Email *</label>
+                            <input 
+                                type="email" 
+                                placeholder="Enter your mail address" 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="login-field" style={{position: 'relative'}}>
+                            <label>Password *</label>
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} style={{position: 'absolute', right: '10px', top: '35px', background:'none', border:'none', cursor:'pointer', color:'#888'}}>
+                                ????
+                            </button>
+                        </div>
+                        
+                        <div className="login-options">
+                            <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '400', color: '#1a1a2e'}}>
+                                <input type="checkbox" style={{width: 'auto', margin: 0}} /> Remember me
+                            </label>
+                            <Link to="/forgot-password">Forgot your password ?</Link>
+                        </div>
+                        
+                        {(error || clientError) && <div style={{color: 'red', marginBottom: '10px'}}>{error || clientError}</div>}
+                        
+                        <button type="submit" className="login-btn" disabled={loading}>
+                            {loading ? 'Logging in...' : 'Log In'}
+                        </button>
+                        
+                        <div style={{textAlign: 'center', margin: '20px 0', color: '#888', fontSize: '14px', position: 'relative'}}>
+                            <hr style={{position: 'absolute', width: '100%', top: '8px', border: 'none', borderTop: '1px solid #eee', zIndex: 1}} />
+                            <span style={{background: 'white', padding: '0 10px', position: 'relative', zIndex: 2}}>Or, Login with</span>
+                        </div>
+                        
+                        <button type="button" onClick={onGoogleLogin} style={{width: '100%', padding: '12px', background: 'white', border: '1px solid #d1d1e0', borderRadius: '6px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontWeight: '600', color: '#1a1a2e'}}>
+                            Signup with google
+                        </button>
+                        
+                        <div style={{textAlign: 'center', marginTop: '30px', fontSize: '14px'}}>
+                            Don't have an account? <Link to="/register" style={{color: '#4f46e5', fontWeight: '600'}}>Register here</Link>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div className="login-right"></div>
+        </div>
+    )
 }
 
 export default Login

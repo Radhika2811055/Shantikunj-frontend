@@ -1,6 +1,7 @@
-/* eslint-disable react-refresh / only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import api from '../api/axios'
+import { getApiErrorMessage } from '../api/errorParser'
+import { authService } from '../api/services'
 
 const AuthContext = createContext(null)
 
@@ -65,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 
 		const hydrateProfile = async () => {
 			try {
-				const response = await api.get('/auth/me')
+				const response = await authService.me()
 				const profile = response?.data
 				if (!profile || cancelled) return
 
@@ -98,14 +99,14 @@ export const AuthProvider = ({ children }) => {
 		setLoading(true)
 		setError('')
 		try {
-			const { data } = await api.post('/auth/login', { email, password })
+			const { data } = await authService.login({ email, password })
 			setUser(data.user)
 			setToken(data.token)
 			localStorage.setItem('token', data.token)
 			localStorage.setItem('user', JSON.stringify(data.user))
 			return { ok: true, user: data.user }
 		} catch (err) {
-			const msg = err?.response?.data?.message || (err?.request ? 'Unable to reach server. Please ensure backend and database are running.' : 'Login failed')
+			const msg = getApiErrorMessage(err, 'Login failed')
 			setError(msg)
 			return { ok: false, message: msg }
 		} finally {
@@ -117,10 +118,10 @@ export const AuthProvider = ({ children }) => {
 		setLoading(true)
 		setError('')
 		try {
-			await api.post('/auth/register', payload)
+			await authService.register(payload)
 			return { ok: true }
 		} catch (err) {
-			const msg = err?.response?.data?.message || (err?.request ? 'Unable to reach server. Please ensure backend and database are running.' : 'Registration failed')
+			const msg = getApiErrorMessage(err, 'Registration failed')
 			setError(msg)
 			return { ok: false, message: msg }
 		} finally {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import api from '../api/axios'
+import { getApiErrorMessage } from '../api/errorParser'
+import { authService } from '../api/services'
 
 const ResetPassword = () => {
   const navigate = useNavigate()
@@ -28,11 +29,11 @@ const ResetPassword = () => {
 
     setLoading(true)
     try {
-      const { data } = await api.post(`/auth/reset-password/${token}`, { newPassword })
+      const { data } = await authService.resetPassword(token, { newPassword })
       setMessage(data?.message || 'Password reset successful')
       setTimeout(() => navigate('/login'), 1200)
     } catch (err) {
-      setError(err?.response?.data?.message || 'Unable to reset password')
+      setError(getApiErrorMessage(err, 'Unable to reset password'))
     } finally {
       setLoading(false)
     }

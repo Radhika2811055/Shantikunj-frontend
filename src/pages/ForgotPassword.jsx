@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import api from '../api/axios'
+import { getApiErrorMessage } from '../api/errorParser'
+import { authService } from '../api/services'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('')
@@ -15,10 +16,10 @@ const ForgotPassword = () => {
     setMessage('')
 
     try {
-      const { data } = await api.post('/auth/forgot-password', { email })
+      const { data } = await authService.forgotPassword({ email })
       setMessage(data?.message || 'Reset link sent. Check your email inbox.')
     } catch (err) {
-      setError(err?.response?.data?.message || 'Unable to send reset link')
+      setError(getApiErrorMessage(err, 'Unable to send reset link'))
     } finally {
       setLoading(false)
     }

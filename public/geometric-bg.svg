@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <clipPath id="topRightWrap">
+      <rect x="533" y="0" width="267" height="300" />
+    </clipPath>
+    <pattern id="cubes" width="80" height="138" patternUnits="userSpaceOnUse">
+      <path d="M40 0 L80 23 L80 69 L40 46 Z" fill="#4B47C4"/>
+      <path d="M0 23 L40 0 L40 46 L0 69 Z" fill="#3B389E"/>
+      <path d="M0 69 L40 46 L80 69 L40 92 Z" fill="#2E2C85"/>
+    </pattern>
+  </defs>
+
+  <!-- Background base -->
+  <rect width="100%" height="100%" fill="#29278A" />
+
+  <!-- Top row -->
+  <!-- Top Left: Purple Leaf -->
+  <rect x="0" y="0" width="266" height="300" fill="#884EFF" />
+  <path d="M0 0 C150 0, 260 150, 133 300 C0 150, 0 0, 0 0 Z" fill="#9966FF" />
+  <path d="M266 0 C116 0, 6 150, 133 300 C266 150, 266 0, 266 0 Z" fill="#A475FF" />
+  
+  <!-- Top Mid: Dark Navy Block -->
+  <rect x="266" y="0" width="267" height="300" fill="#0A093D" />
+  <!-- Diamonds -->
+  <polygon points="320,100 340,80 360,100 340,120" fill="#FFC800"/>
+  <polygon points="290,100 310,80 330,100 310,120" fill="#FF5252"/>
+  <polygon points="350,100 370,80 390,100 370,120" fill="#FFC800"/>
+  <!-- Stripes -->
+  <rect x="290" y="160" width="200" height="10" fill="#00D2FF" />
+  <g fill="#FFF">
+    <rect x="290" y="190" width="4" height="20" /><rect x="300" y="190" width="4" height="20" /><rect x="310" y="190" width="4" height="20" /><rect x="320" y="190" width="4" height="20" /><rect x="330" y="190" width="4" height="20" /><rect x="340" y="190" width="4" height="20" /><rect x="350" y="190" width="4" height="20" /><rect x="360" y="190" width="4" height="20" /><rect x="370" y="190" width="4" height="20" /><rect x="380" y="190" width="4" height="20" /><rect x="390" y="190" width="4" height="20" /><rect x="400" y="190" width="4" height="20" /><rect x="410" y="190" width="4" height="20" /><rect x="420" y="190" width="4" height="20" /><rect x="430" y="190" width="4" height="20" /><rect x="440" y="190" width="4" height="20" /><rect x="450" y="190" width="4" height="20" /><rect x="460" y="190" width="4" height="20" /><rect x="470" y="190" width="4" height="20" /><rect x="480" y="190" width="4" height="20" />
+  </g>
+  <rect x="290" y="240" width="140" height="10" fill="#3B389E" />
+
+  <!-- Top Right: Cubes -->
+  <rect x="533" y="0" width="267" height="300" fill="url(#cubes)" />
+
+  <!-- Middle Section -->
+  <rect x="0" y="300" width="800" height="400" fill="#29278A" />
+  
+  <!-- Right edge arcs -->
+  <path d="M533 300 A267 267 0 0 0 800 567 L800 300 Z" fill="#4B47C4" />
+  <path d="M580 300 A220 220 0 0 0 800 520 L800 300 Z" fill="#5854E8" />
+  <!-- Triangle stack -->
+  <polygon points="100,360 130,400 70,400" fill="#4B47C4"/>
+  <polygon points="100,410 140,460 60,460" fill="#5854E8"/>
+  <!-- Center elements -->
+  <path d="M350 320 C330 350, 310 380, 350 410 C390 380, 370 350, 350 320 Z" fill="#E8EBFF"/>
+  <rect x="460" y="380" width="10" height="30" fill="#4B47C4"/><rect x="460" y="420" width="10" height="30" fill="#5854E8"/>
+  <rect x="480" y="390" width="10" height="20" fill="#4B47C4"/><rect x="480" y="420" width="10" height="30" fill="#5854E8"/>
+
+  <!-- Striped bar from left -->
+  <rect x="0" y="570" width="300" height="10" fill="#0A093D" />
+  <rect x="0" y="590" width="280" height="10" fill="#0A093D" />
+  <rect x="0" y="610" width="320" height="10" fill="#0A093D" />
+
+  <!-- Star -->
+  <polygon points="200,530 220,580 180,580 160,540 180,510" fill="#FFD600" transform="translate(60,20) scale(1.5)"/>
+  <path d="M220,530 L225,560 L255,560 L232,580 L240,610 L217,590 L195,610 L202,580 L180,560 L212,560 Z" fill="#FFCE00"/>
+
+  <!-- Cyan Rect -->
+  <rect x="45" y="620" width="115" height="175" fill="#00D2FF" />
+  <polygon points="45,620 160,795 45,795" fill="#00B8D9" />
+
+  <!-- Bottom background -->
+  <rect x="0" y="700" width="800" height="500" fill="#0A093D" />
+  <rect x="0" y="700" width="800" height="20" fill="#5854E8" />
+  <rect x="0" y="730" width="800" height="20" fill="#5854E8" />
+  <rect x="0" y="800" width="800" height="40" fill="#4B47C4" />
+
+  <!-- Right Big Dark Curve -->
+  <path d="M800 700 L560 700 A200 200 0 0 0 360 900 A200 200 0 0 0 560 1100 L800 1100 Z" fill="#0A093D" />
+  <path d="M800 720 L560 720 A180 180 0 0 0 380 900 A180 180 0 0 0 560 1080 L800 1080 Z" fill="#5854E8" />
+  <path d="M800 780 L560 780 A120 120 0 0 0 440 900 A120 120 0 0 0 560 1020 L800 1020 Z" fill="#0A093D" />
+  <circle cx="560" cy="900" r="16" fill="#4B47C4" />
+  <circle cx="560" cy="900" r="4" fill="#FFF" />
+  <!-- Inside line of the giant swoop -->
+  <path d="M560 884 A116 116 0 0 1 676 768 L800 768" fill="none" stroke="#5854E8" stroke-width="2" />
+  <path d="M560 900 L800 900" fill="none" stroke="#5854E8" stroke-width="2" />
+  
+  <!-- Left Bottom details -->
+  <path d="M0 900 A100 100 0 0 0 100 1000" fill="none" stroke="#4B47C4" stroke-width="2" />
+  <path d="M0 880 A120 120 0 0 0 120 1000" fill="none" stroke="#5854E8" stroke-width="2" />
+  <path d="M0 860 A140 140 0 0 0 140 1000" fill="none" stroke="#3B389E" stroke-width="2" />
+  
+  <circle cx="280" cy="950" r="12" fill="none" stroke="#4B47C4" stroke-width="3" />
+  <circle cx="250" cy="930" r="6" fill="#4B47C4" />
+  <circle cx="310" cy="1000" r="16" fill="#29278A" />
+  <rect x="295" y="870" width="30" height="130" fill="#29278A" />
+
+  <!-- Bottom Left Purple arc -->
+  <path d="M0 1000 A200 200 0 0 0 200 1200 L0 1200 Z" fill="#884EFF" />
+  <path d="M0 1050 A150 150 0 0 0 150 1200 L0 1200 Z" fill="none" stroke="#FFF" stroke-width="1" opacity="0.3" />
+  <path d="M0 1100 A100 100 0 0 0 100 1200 L0 1200 Z" fill="none" stroke="#FFF" stroke-width="1" opacity="0.3" />
+
+  <!-- Bottom Wavy lines -->
+  <path d="M260 1110 Q280 1095 300 1110 T340 1110 T380 1110 T420 1110 T460 1110 T500 1110" fill="none" stroke="#3B389E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M260 1130 Q280 1115 300 1130 T340 1130 T380 1130 T420 1130 T460 1130 T500 1130" fill="none" stroke="#3B389E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M260 1150 Q280 1135 300 1150 T340 1150 T380 1150 T420 1150 T460 1150 T500 1150" fill="none" stroke="#3B389E" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Bottom Right Cyan -->
+  <rect x="550" y="880" width="250" height="320" fill="#26C6DA" />
+  <!-- Fix overlap issue with Cyan box and curve -->
+  <path d="M800 780 L560 780 A120 120 0 0 0 440 900 A120 120 0 0 0 560 1020 L800 1020 Z" fill="#0A093D" />
+  <circle cx="560" cy="900" r="16" fill="#4B47C4" />
+  <circle cx="560" cy="900" r="4" fill="#FFF" />
+
+  <!-- Dot Matrix Grid in Cyan Bottom Right -->
+  <g fill="#FFF" opacity="0.8">
+    <circle cx="730" cy="1050" r="3"/><circle cx="745" cy="1050" r="3"/><circle cx="760" cy="1050" r="3"/><circle cx="775" cy="1050" r="3"/>
+    <circle cx="730" cy="1065" r="3"/><circle cx="745" cy="1065" r="3"/><circle cx="760" cy="1065" r="3"/><circle cx="775" cy="1065" r="3"/>
+    <circle cx="730" cy="1080" r="3"/><circle cx="745" cy="1080" r="3"/><circle cx="760" cy="1080" r="3"/><circle cx="775" cy="1080" r="3"/>
+    <circle cx="730" cy="1095" r="3"/><circle cx="745" cy="1095" r="3"/><circle cx="760" cy="1095" r="3"/><circle cx="775" cy="1095" r="3"/>
+    <circle cx="730" cy="1110" r="3"/><circle cx="745" cy="1110" r="3"/><circle cx="760" cy="1110" r="3"/><circle cx="775" cy="1110" r="3"/>
+    <circle cx="730" cy="1125" r="3"/><circle cx="745" cy="1125" r="3"/><circle cx="760" cy="1125" r="3"/><circle cx="775" cy="1125" r="3"/>
+    <circle cx="730" cy="1140" r="3"/><circle cx="745" cy="1140" r="3"/><circle cx="760" cy="1140" r="3"/><circle cx="775" cy="1140" r="3"/>
+    <circle cx="730" cy="1155" r="3"/><circle cx="745" cy="1155" r="3"/><circle cx="760" cy="1155" r="3"/><circle cx="775" cy="1155" r="3"/>
+  </g>
+</svg>
