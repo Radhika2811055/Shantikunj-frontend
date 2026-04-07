@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LMS AudioBook">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d7cff"/>
+      <stop offset="100%" stop-color="#16a085"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <path d="M14 16h10v32H14zM28 16h10v32H28z" fill="#ffffff" opacity="0.95"/>
+  <path d="M42 16h8c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12h-8z" fill="#ffffff" opacity="0.95"/>
+  <path d="M46 24h4c4.4 0 8 3.6 8 8v2c0 4.4-3.6 8-8 8h-4z" fill="#1f5a9f"/>
+</svg>
