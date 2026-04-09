@@ -4,6 +4,7 @@ import { authService } from '../api/services'
 import { runtimeConfig } from '../config/runtimeConfig'
 import { useAuth } from '../context/AuthContext'
 import { getApiErrorMessage } from '../api/errorParser'
+import LoginParticleCanvas from '../components/LoginParticleCanvas'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -63,67 +64,90 @@ const Login = () => {
     }
 
     return (
-        <div className="login-split-page">
-            <div className="login-left">
-                <div className="login-form-container">
-                    <div style={{color: '#4f46e5', marginBottom: '40px'}}><svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg></div>
-                    <h1>Welcome back !</h1>
-                    <p className="subtitle">Enter to get unlimited access to data & information.</p>
-                    
+        <div className="login-page">
+            <LoginParticleCanvas />
+            <div className="login-page-vignette" />
+
+            <div className="login-card-shell">
+                <div className="login-form-container login-form-pro">
+                    <div className="login-brand-mark">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 22h20L12 2z"/></svg>
+                        <span>Shantikunj</span>
+                    </div>
+
+                    <h1>Welcome Back</h1>
+                    <p className="subtitle">Sign in to continue with your workspace and tasks.</p>
+
+                    {verified === 'true' && <div className="login-notice login-notice-ok">Email verified successfully. Please log in.</div>}
+                    {errorCode && <div className="login-notice login-notice-error">Authentication session expired. Please login again.</div>}
+
                     <form onSubmit={onSubmit}>
                         <div className="login-field">
                             <label>Email *</label>
-                            <input 
-                                type="email" 
-                                placeholder="Enter your mail address" 
+                            <input
+                                type="email"
+                                placeholder="Enter your email address"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
+                                className={touched.email && emailError ? 'login-input-error' : ''}
                                 required
                             />
+                            {touched.email && emailError && <p className="login-field-error">{emailError}</p>}
                         </div>
-                        <div className="login-field" style={{position: 'relative'}}>
+
+                        <div className="login-field login-password-field">
                             <label>Password *</label>
-                            <input 
-                                type={showPassword ? "text" : "password"} 
+                            <input
+                                type={showPassword ? 'text' : 'password'}
                                 placeholder="Enter password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
+                                className={touched.password && passwordError ? 'login-input-error' : ''}
                                 required
                             />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} style={{position: 'absolute', right: '10px', top: '35px', background:'none', border:'none', cursor:'pointer', color:'#888'}}>
-                                ????
+                            <button
+                                type="button"
+                                className="login-pass-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? 'Hide' : 'Show'}
                             </button>
+                            {touched.password && passwordError && <p className="login-field-error">{passwordError}</p>}
                         </div>
-                        
+
                         <div className="login-options">
-                            <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '400', color: '#1a1a2e'}}>
-                                <input type="checkbox" style={{width: 'auto', margin: 0}} /> Remember me
+                            <label className="login-remember-toggle">
+                                <input type="checkbox" />
+                                <span>Remember me</span>
                             </label>
-                            <Link to="/forgot-password">Forgot your password ?</Link>
+                            <Link to="/forgot-password">Forgot your password?</Link>
                         </div>
-                        
-                        {(error || clientError) && <div style={{color: 'red', marginBottom: '10px'}}>{error || clientError}</div>}
-                        
+
+                        {(error || clientError) && <div className="login-notice login-notice-error">{error || clientError}</div>}
+
                         <button type="submit" className="login-btn" disabled={loading}>
                             {loading ? 'Logging in...' : 'Log In'}
                         </button>
-                        
-                        <div style={{textAlign: 'center', margin: '20px 0', color: '#888', fontSize: '14px', position: 'relative'}}>
-                            <hr style={{position: 'absolute', width: '100%', top: '8px', border: 'none', borderTop: '1px solid #eee', zIndex: 1}} />
-                            <span style={{background: 'white', padding: '0 10px', position: 'relative', zIndex: 2}}>Or, Login with</span>
+
+                        <div className="login-divider">
+                            <hr />
+                            <span>or continue with</span>
                         </div>
-                        
-                        <button type="button" onClick={onGoogleLogin} style={{width: '100%', padding: '12px', background: 'white', border: '1px solid #d1d1e0', borderRadius: '6px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontWeight: '600', color: '#1a1a2e'}}>
-                            Signup with google
+
+                        <button type="button" onClick={onGoogleLogin} className="login-google-btn">
+                            Sign in with Google
                         </button>
-                        
-                        <div style={{textAlign: 'center', marginTop: '30px', fontSize: '14px'}}>
-                            Don't have an account? <Link to="/register" style={{color: '#4f46e5', fontWeight: '600'}}>Register here</Link>
+
+                        {oauthError && <div className="login-notice login-notice-error">{oauthError}</div>}
+
+                        <div className="login-register-link">
+                            Don&apos;t have an account? <Link to="/register">Register here</Link>
                         </div>
                     </form>
                 </div>
             </div>
-            <div className="login-right"></div>
         </div>
     )
 }
